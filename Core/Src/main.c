@@ -53,7 +53,56 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void pt1(int c1, int c2)
+{
+	HAL_Init(); // Reset of all peripherals, init the Flash and Systick
+	SystemClock_Config(); //Configure the system clock
+	RCC->AHBENR |= RCC_AHBENR_GPIOCEN; 
 
+	GPIOC->MODER &= ~((1<<(c2*2+1))|(1<<(c1*2+1)));
+	GPIOC->MODER |= (1<<c2*2)|(1<<c1*2);
+	GPIOC->OTYPER &= ~((1<<c2) | (1<<c1));
+	GPIOC->OSPEEDR &= ~((1<<c2*2) | (1<<c1*2));
+	GPIOC->PUPDR &= ~((1<<c1*2) | (1<<(c2*2+1)) |(1<<c2*2)|(1<<(c1*2+1)) );
+	
+	
+	GPIOC->ODR |= (1<<c2) ;
+	while ((1 ^ (GPIOA->IDR))) {
+		HAL_Delay(200); // Delay 200ms
+		// Toggle the output state of both colors
+		GPIOC->ODR ^= (1<<c2) ;
+		GPIOC->ODR ^= (1<<c1) ;
+	}
+}
+void pt2(int c1, int c2)
+{
+	HAL_Init(); // Reset of all peripherals, init the Flash and Systick
+	SystemClock_Config(); //Configure the system clock
+	RCC->AHBENR |= RCC_AHBENR_GPIOCEN; 
+	RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
+
+	GPIOC->MODER &= ~((1<<(c2*2+1))|(1<<(c1*2+1)));
+	GPIOC->MODER |= (1<<c2*2)|(1<<c1*2);
+	GPIOC->OTYPER &= ~((1<<c2) | (1<<c1));
+	GPIOC->OSPEEDR &= ~((1<<c2*2) | (1<<c1*2));
+	GPIOC->PUPDR &= ~((1<<c1*2) | (1<<(c2*2+1)) |(1<<c2*2)|(1<<(c1*2+1)) );
+	
+	
+	GPIOA->MODER &= ~(1<<1 | 1);
+	GPIOA->OSPEEDR &= ~(1);
+	GPIOA->PUPDR &= ~(1);
+	GPIOA->PUPDR |= (1<<1);
+	
+	GPIOC->ODR |= (1<<c2) ;
+	while (1) {
+		HAL_Delay(200); // Delay 200ms
+		// Toggle the output state of both colors
+		if (1 & (GPIOA->IDR)){
+			GPIOC->ODR ^= (1<<c2) ;
+			GPIOC->ODR ^= (1<<c1) ;
+		}
+	}
+}
 /* USER CODE END 0 */
 
 /**
@@ -62,20 +111,6 @@ void SystemClock_Config(void);
   */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
-	HAL_Init(); // Reset of all peripherals, init the Flash and Systick
-	SystemClock_Config(); //Configure the system clock
-	/* This example uses HAL library calls to control
-	the GPIOC peripheral. You’ll be redoing this code
-	with hardware register access. */
-	RCC->AHBENR |= RCC_AHBENR_GPIOCEN; 
-	//__HAL_RCC_GPIOC_CLK_ENABLE(); // Enable the GPIOC clock in the RCC
-	// Set up a configuration struct to pass to the initialization function
-	//GPIO_InitTypeDef initStr = {GPIO_PIN_8 | GPIO_PIN_9,
-	//GPIO_MODE_OUTPUT_PP,
-	//GPIO_SPEED_FREQ_LOW,
-	//GPIO_NOPULL};
-	//HAL_GPIO_Init(GPIOC, &initStr); // Initialize pins PC8 & PC9
 	int16_t red = 6; 
 	int16_t blue = 7; 
 	int16_t orange = 8;
@@ -83,60 +118,10 @@ int main(void)
 	
 	int16_t c1 = blue;
 	int16_t c2 = red;
-
-	GPIOC->MODER &= ~((1<<(c2*2+1))|(1<<(c1*2+1)));
-	GPIOC->MODER |= (1<<c2*2)|(1<<c1*2);
-	GPIOC->OTYPER &= ~((1<<c2) | (1<<c1));
-	GPIOC->OSPEEDR &= ~((1<<c2*2) | (1<<c1*2));
-	GPIOC->PUPDR &= ~((1<<c1*2) | (1<<(c2*2+1)) |(1<<c2*2)|(1<<(c1*2+1)) );
+ 
+	pt1(c1,c2); //press user button to go to pt2
+	pt2(c1,c2);
 	
-	//GPIOA->MODER |= (1<<10) | (1<<12) |(1<<14)|(1<<16);
-	//GPIOA->OSPEEDR &= ~((1<<10) | (1<<12) |(1<<14)|(1<<16) | (1<<17) | (1<<11) |(1<<13)|(1<<15));
-	//GPIOA->PUPDR |= (1<<11) | (1<<13) |(1<<15)|(1<<17);
-	//GPIOC->IDR &= (1 << 10);
-	//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET); // Start PC8 high
-	GPIOC->ODR |= (1<<c2) ;
-	
-	while (1) {
-		HAL_Delay(200); // Delay 200ms
-		// Toggle the output state of both PC8 and PC9
-		//HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8 | GPIO_PIN_9);
-		GPIOC->ODR ^= (1<<c2) ;
-		GPIOC->ODR ^= (1<<c1) ;
-		
-	}
-  /* USER CODE END 1 */
-
-  /* MCU Configuration--------------------------------------------------------*/
-
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
-
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
-  /* Configure the system clock */
-  SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
-
-  /* Initialize all configured peripherals */
-  /* USER CODE BEGIN 2 */
-
-  /* USER CODE END 2 */
-
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
-  }
-  /* USER CODE END 3 */
 }
 
 /**
