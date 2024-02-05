@@ -70,12 +70,14 @@ void pt1(int c1, int c2)
 	while ((1 ^ (GPIOA->IDR))) {
 		HAL_Delay(200); // Delay 200ms
 		// Toggle the output state of both colors
+		
 		GPIOC->ODR ^= (1<<c2) ;
 		GPIOC->ODR ^= (1<<c1) ;
 	}
 }
 void pt2(int c1, int c2)
 {
+	uint32_t debouncer=0;
 	HAL_Init(); // Reset of all peripherals, init the Flash and Systick
 	SystemClock_Config(); //Configure the system clock
 	RCC->AHBENR |= RCC_AHBENR_GPIOCEN; 
@@ -95,12 +97,25 @@ void pt2(int c1, int c2)
 	
 	GPIOC->ODR |= (1<<c2) ;
 	while (1) {
-		HAL_Delay(200); // Delay 200ms
+		HAL_Delay(2); // Delay 2ms
 		// Toggle the output state of both colors
-		if (1 & (GPIOA->IDR)){
+		
+		debouncer = (debouncer << 1); // Always shift every loop iteration
+		
+		if (1 & (GPIOA->IDR)) { // If input signal is set/high
+		debouncer |= 1; // Set lowest bit of bit-vector
+		}
+		
+		if (debouncer == 0x7FFFFFFF) {
+		// This code triggers only once when transitioning to steady high!
 			GPIOC->ODR ^= (1<<c2) ;
 			GPIOC->ODR ^= (1<<c1) ;
 		}
+		// When button is bouncing the bit-vector value is random since bits are set when
+		//the button is high and not when it bounces low.
+		
+			
+		
 	}
 }
 /* USER CODE END 0 */
@@ -119,7 +134,7 @@ int main(void)
 	int16_t c1 = blue;
 	int16_t c2 = red;
  
-	pt1(c1,c2); //press user button to go to pt2
+	//pt1(c1,c2); //press user button to go to pt2
 	pt2(c1,c2);
 	
 }
