@@ -67,7 +67,7 @@ void pt1(int c1, int c2)
 	
 	
 	GPIOC->ODR |= (1<<c2) ;
-	while ((1 ^ (GPIOA->IDR))) {
+	while (1) {
 		HAL_Delay(200); // Delay 200ms
 		// Toggle the output state of both colors
 		
@@ -134,7 +134,7 @@ int main(void)
 	int16_t c1 = blue;
 	int16_t c2 = red;
  
-	//pt1(c1,c2); //press user button to go to pt2
+	//pt1(c1,c2); 
 	pt2(c1,c2);
 	
 }
