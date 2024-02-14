@@ -113,9 +113,10 @@ int main(void)
 	SYSCFG->EXTICR[0] &= ~7;
 	
 	NVIC_EnableIRQ(EXTI0_1_IRQn);
-	NVIC_SetPriority(EXTI0_1_IRQn,1);
-	NVIC_SetPriority(SysTick_IRQn,2);
 	NVIC_SetPriority(EXTI0_1_IRQn,3);
+	NVIC_EnableIRQ(SysTick_IRQn);
+	NVIC_SetPriority(SysTick_IRQn,1);
+	//NVIC_SetPriority(EXTI0_1_IRQn,3);
 	
   GPIOC->ODR |= (1<<c1) ;
 	while (1) {
