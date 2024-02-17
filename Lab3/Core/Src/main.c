@@ -86,8 +86,8 @@ int main(void)
 
   /* USER CODE END Init */
 	RCC->AHBENR |= RCC_AHBENR_GPIOCEN;
-	GPIOC->MODER &= ~((1<<(green*2+1))|(1<<(red*2+1)) | (1<<(orange*2+1))|(1<<(blue*2+1)));
-	GPIOC->MODER |= (1<<green*2)|(1<<red*2) | (1<<orange*2)|(1<<blue*2);
+	GPIOC->MODER &= ~((1<<(green*2))|(1<<(red*2)) | (1<<(orange*2))|(1<<(blue*2)));
+	GPIOC->MODER |= (1<<(green*2))|(2<<(red*2)) | (1<<(orange*2))|(2<<(blue*2));
 	GPIOC->OTYPER &= ~((1<<green) | (1<<red) | (1<<orange) | (1<<blue));
 	GPIOC->OSPEEDR &= ~((1<<green*2) | (1<<red*2) | (1<<orange*2) | (1<<blue*2));
 	GPIOC->PUPDR &= ~((1<<red*2) | (1<<(green*2+1)) |(1<<green*2)|(1<<(red*2+1)) |( 1<<orange*2) | (1<<(blue*2+1)) |(1<<blue*2)|(1<<(orange*2+1)) );
@@ -100,9 +100,25 @@ int main(void)
 	TIM2->ARR = 2000;
 	TIM2->DIER |= 1;
 	TIM2->CR1 |= 1;
-	 
 	
+
+	//3.2 *******************************************
+	RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
 	
+	TIM3->PSC = 99;
+	TIM3->ARR = 100;
+	TIM3->CCMR1 &= ~(TIM_CCMR1_CC1S_0 | TIM_CCMR1_CC1S_1);
+	TIM3->CCMR1 &= ~(TIM_CCMR1_CC2S_0 | TIM_CCMR1_CC2S_1);
+	TIM3->CCMR1 |= ((TIM_CCMR1_OC1M_0) | (TIM_CCMR1_OC1M_1) | TIM_CCMR1_OC1M_2 );
+	TIM3->CCMR1 |= ((TIM_CCMR1_OC2M_1) | TIM_CCMR1_OC2M_2 );
+	TIM3->CCMR1 |= (TIM_CCMR1_OC2PE | TIM_CCMR1_OC1PE );
+	TIM3 ->CR1 |= TIM_CR1_CEN;
+	TIM3->CCER |= TIM_CCER_CC1E | TIM_CCER_CC2E;
+	
+	TIM3->CCR1 = 5;
+	TIM3->CCR2 = 5;
+	
+	//3.2 end ****************************************
   /* USER CODE BEGIN SysInit */
 
   /* USER CODE END SysInit */
@@ -115,6 +131,8 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	GPIOC->ODR |= (1<<green) ;
+	//GPIOC->ODR |= (1<<red) ;
+	//GPIOC->ODR |= (1<<blue) ;
   while (1)
   {
     /* USER CODE END WHILE */
