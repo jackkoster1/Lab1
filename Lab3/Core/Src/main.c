@@ -115,7 +115,7 @@ int main(void)
 	TIM3 ->CR1 |= TIM_CR1_CEN;
 	TIM3->CCER |= TIM_CCER_CC1E | TIM_CCER_CC2E;
 	
-	TIM3->CCR1 = 0;
+	TIM3->CCR1 = 50;
 	TIM3->CCR2 = 50;
 	
 	//3.2 end ****************************************
