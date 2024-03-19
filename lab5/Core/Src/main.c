@@ -253,50 +253,42 @@ int main(void)
 			//confirm
 			write(0x20);
 			read(0x0b);
-			
-		
-		
-		GPIOC->ODR |= 1<<green;
-		
-		//I2C2 -> CR2 |= (0X69 << 1 | 1<<16| 1<<13);  //sets slave address, sets bytes to transmit, and sets start
-		//I2C2 -> CR2 &= ~(1<<10);                    //set 0 to write
-		
 	
 		int16_t x,y, thres = 0x01ff;
 	
-  while (1)
-  {
-		HAL_Delay(100);
-			x = readx();
-			y = ready();
-			if(y < thres && y > -thres)
-				GPIOC->ODR &= ~(1<<blue | 1 << red);
-			else if (y >= thres)
-			{
-				GPIOC->ODR &= ~(1<<blue);
-				GPIOC->ODR |= 1<<red;
-			}
-			else
+		while (1)
+		{
+			HAL_Delay(100);
+				x = readx();
+				y = ready();
+				if(y < thres && y > -thres)
+					GPIOC->ODR &= ~(1<<blue | 1 << red);
+				else if (y >= thres)
 				{
-				GPIOC->ODR &= ~(1<<red);
-				GPIOC->ODR |= 1<<blue;
-			}
-			
-			if(x < thres && x > -thres)
-				GPIOC->ODR &= ~(1<<orange | 1 << green);
-			else if (x <= thres)
-			{
-				GPIOC->ODR &= ~(1<<green);
-				GPIOC->ODR |= 1<<orange;
-			}
-			else
+					GPIOC->ODR &= ~(1<<blue);
+					GPIOC->ODR |= 1<<red;
+				}
+				else
+					{
+					GPIOC->ODR &= ~(1<<red);
+					GPIOC->ODR |= 1<<blue;
+				}
+				
+				if(x < thres && x > -thres)
+					GPIOC->ODR &= ~(1<<orange | 1 << green);
+				else if (x <= thres)
 				{
-				GPIOC->ODR &= ~(1<<orange);
-				GPIOC->ODR |= 1<<green;
-			}
+					GPIOC->ODR &= ~(1<<green);
+					GPIOC->ODR |= 1<<orange;
+				}
+				else
+					{
+					GPIOC->ODR &= ~(1<<orange);
+					GPIOC->ODR |= 1<<green;
+				}
+				
 			
-		
-  }
+		}
 		
 	}
   /* USER CODE END 2 */
