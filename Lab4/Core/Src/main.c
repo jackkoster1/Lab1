@@ -63,15 +63,11 @@ int16_t green = 9;
 void init_led()
 {
 	RCC->AHBENR |= RCC_AHBENR_GPIOCEN;
-	int16_t c1 = green;
-	int16_t c2 = red;
-	int16_t c3 = blue;
-	int16_t c4 = orange;
-	GPIOC->MODER &= ~((1<<(c2*2+1))|(1<<(c1*2+1)) | (1<<(c3*2+1))|(1<<(c4*2+1)));
-	GPIOC->MODER |= (1<<c2*2)|(1<<c1*2) | (1<<c3*2)|(1<<c4*2);
-	GPIOC->OTYPER &= ~((1<<c2) | (1<<c1) | (1<<c3) | (1<<c4));
-	GPIOC->OSPEEDR &= ~((1<<c2*2) | (1<<c1*2) | (1<<c3*2) | (1<<c4*2));
-	GPIOC->PUPDR &= ~((1<<c1*2) | (1<<(c2*2+1)) |(1<<c2*2)|(1<<(c1*2+1)) |( 1<<c3*2) | (1<<(c4*2+1)) |(1<<c4*2)|(1<<(c3*2+1)) );
+	GPIOC->MODER &= ~((1<<(red*2+1))|(1<<(green*2+1)) | (1<<(blue*2+1))|(1<<(orange*2+1)));
+	GPIOC->MODER |= (1<<red*2)|(1<<green*2) | (1<<blue*2)|(1<<orange*2);
+	GPIOC->OTYPER &= ~((1<<red) | (1<<green) | (1<<blue) | (1<<orange));
+	GPIOC->OSPEEDR &= ~((1<<red*2) | (1<<green*2) | (1<<blue*2) | (1<<orange*2));
+	GPIOC->PUPDR &= ~((1<<green*2) | (1<<(red*2+1)) |(1<<red*2)|(1<<(green*2+1)) |( 1<<blue*2) | (1<<(orange*2+1)) |(1<<orange*2)|(1<<(blue*2+1)) );
 }
 void transmit_string(char arr[])
 {
