@@ -160,7 +160,7 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	int i = 0;
-	while(1)
+	while(1) //part2
 	{
 		i++;
 		if(i >= 32)
@@ -168,7 +168,7 @@ int main(void)
 		HAL_Delay(1);
 		DAC->DHR8R1 = sine_table[i];
 	}
-  while (1)
+  while (1) //part1
   {
 		while(!(ADC1->ISR >>2 & 1));
     /* USER CODE END WHILE */
